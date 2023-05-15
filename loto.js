@@ -1,9 +1,11 @@
 const fs = require("fs");
+const {
+  PREMIO_PER_2_NUMBERI,
+  PREMIO_PER_3_NUMBERI,
+  PREMIO_PER_4_NUMBERI,
+} = require("./constants");
 
 const estrazioni = JSON.parse(fs.readFileSync("./loto.json"));
-
-const PREMIO_PER_2_NUMBERI = 4; // because we have 4 numbers, 4 permutations of 3 numbers each. so each couple of numbers is repeated twice
-const PREMIO_PER_3_NUMBERI = 45 + 6; // 45 for the 3 numbers match, and 6 for the 2 numbers match
 
 const buildArray = (start, end) => {
   return Array.from({ length: end - start + 1 }, (v, k) => k + start);
@@ -15,7 +17,8 @@ let budget = 10000;
 
 const stakeIncreases = [
   1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 5, 5, 5, 5, 10, 10, 10,
-  20, 20, 20, 30, 30, 40, 40, 40, 40, 40, 50, 50,
+  20, 20, 20, 30, 30, 40, 40, 40, 40, 40, 50, 50, 50, 50, 50, 50, 60, 60, 60,
+  60, 60, 60, 60, 60, 60, 60, 70, 70, 70,
 ];
 
 const categories = {
@@ -126,7 +129,7 @@ estrazioni.forEach((estrazione) => {
 
   // update the budget. because we just placed the bet
   currentPlay.forEach(({ totalCategoryStake }) => {
-    updateBudgedOnBet(totalCategoryStake);
+    updateBudgedOnBet(totalCategoryStake, categories);
   });
 
   // ta-ta-ta.....
@@ -139,30 +142,49 @@ estrazioni.forEach((estrazione) => {
       estrazioneNumbers.includes(number)
     );
 
-    if (numbersMatched.length === 3) {
-      budget += PREMIO_PER_3_NUMBERI * stake;
-      categories[categoryName].perdite = 0;
+    switch (numbersMatched.length) {
+      case 4:
+        {
+          budget += PREMIO_PER_4_NUMBERI * stake;
+          categories[categoryName].perdite = 0;
 
-      const premio = PREMIO_PER_3_NUMBERI * stake;
-      console.log(
-        `Hai vinto ${premio}€ con la categoria ${categoryName}. I numeri che hai indovinato sono: ${numbersMatched}`
-      );
-    } else if (numbersMatched.length === 2) {
-      budget += PREMIO_PER_2_NUMBERI * stake;
-      // don't reset perdite
+          const premio = PREMIO_PER_4_NUMBERI * stake;
+          console.log("Grande!!!!!!");
+          console.log(
+            `Hai vinto ${premio}€ con la categoria ${categoryName}. I numeri che hai indovinato sono: ${numbersMatched}`
+          );
+        }
+        break;
+      case 3:
+        {
+          budget += PREMIO_PER_3_NUMBERI * stake;
+          categories[categoryName].perdite = 0;
 
-      const premio = PREMIO_PER_2_NUMBERI * stake;
-      console.log(
-        `Hai vinto ${premio}€ con la categoria ${categoryName}. I numeri che hai indovinato sono: ${numbersMatched}`
-      );
-    } else {
-      categories[categoryName].perdite++;
+          const premio = PREMIO_PER_3_NUMBERI * stake;
+          console.log(
+            `Hai vinto ${premio}€ con la categoria ${categoryName}. I numeri che hai indovinato sono: ${numbersMatched}`
+          );
+        }
+        break;
+      case 2:
+        {
+          budget += PREMIO_PER_2_NUMBERI * stake;
+          // don't reset perdite
+
+          const premio = PREMIO_PER_2_NUMBERI * stake;
+          console.log(
+            `Hai vinto ${premio}€ con la categoria ${categoryName}. I numeri che hai indovinato sono: ${numbersMatched}`
+          );
+        }
+        break;
+      default:
+        categories[categoryName].perdite++;
     }
   });
 
   console.log("Soldi rimanenti: €", budget);
   console.groupEnd(`${estrazione.date}: ${estrazioneNumbers}`);
-  console.log('\n')
+  console.log("\n");
 
   updateRitardi(estrazione.numbers);
 });
