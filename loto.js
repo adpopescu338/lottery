@@ -1,8 +1,16 @@
 const fs = require("fs");
 const {
+  categories,
+  updateRitardi,
+  getRitardi,
+  getStake,
+  clearConsole,
+} = require("./utils");
+const {
   PREMIO_PER_2_NUMBERI,
   PREMIO_PER_3_NUMBERI,
   PREMIO_PER_4_NUMBERI,
+  MAX_STAKE,
 } = require("./constants");
 
 const estrazioni = JSON.parse(fs.readFileSync("./loto.json"));
@@ -60,13 +68,7 @@ const categories = {
   },
 };
 
-const ritardi = (() => {
-  const ritardi = {};
-  for (let i = 1; i <= 90; i++) {
-    ritardi[i] = 0;
-  }
-  return ritardi;
-})();
+const ritardi = getRitardi()
 
 const updateRitardi = (estrazione) => {
   Object.keys(ritardi).forEach((key) => {
@@ -121,8 +123,7 @@ const updateBudgedOnBet = (stake) => {
 // eliminate the estrazioni used to build ritardi
 estrazioni.splice(0, WAIT_FOR);
 
-console.log("\n".repeat(10));
-console.log("-".repeat(100));
+clearConsole()
 
 estrazioni.forEach((estrazione) => {
   const currentPlay = getNumbersToPlay();
