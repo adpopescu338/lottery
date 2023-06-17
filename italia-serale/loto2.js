@@ -15,9 +15,9 @@ const {
 
 const ritardi = getRitardi();
 const estrazioni = JSON.parse(fs.readFileSync("./loto.json"));
-const WAIT_FOR = 250;
-const MIN_CATEGORY_RITARDI = 5;
-const INITIAL_BUDGET = 1000;
+const WAIT_FOR = 50;
+const MIN_CATEGORY_RITARDI = 3;
+const INITIAL_BUDGET = 10000;
 
 let budget = INITIAL_BUDGET;
 

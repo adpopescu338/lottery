@@ -1,12 +1,9 @@
 const { PREMIO_PER_3_NUMBERI, PERMUTATIONS } = require("./constants");
-
-const buildArray = (start, end) => {
-  return Array.from({ length: end - start + 1 }, (v, k) => k + start);
-};
+const buildArray = require("../utils/buildArray");
 
 const defaultCategoriesValues = {
   perdite: 0,
-  lastWon: 5,
+  lastWon: 0,
   loss: 0,
 };
 
@@ -49,6 +46,21 @@ const categories = {
   },
 };
 
+const categories30 = {
+  "1-30": {
+    ...defaultCategoriesValues,
+    numbers: buildArray(1, 30),
+  },
+  "31-60": {
+    ...defaultCategoriesValues,
+    numbers: buildArray(31, 60),
+  },
+  "61-90": {
+    ...defaultCategoriesValues,
+    numbers: buildArray(61, 90),
+  },
+};
+
 const getRitardi = () => {
   const ritardi = {};
   for (let i = 1; i <= 90; i++) {
@@ -86,10 +98,30 @@ const getStake = (loss) => {
   return x;
 };
 
+const getStake30 = (loss) => {
+  if (!loss) loss = 1;
+  /**
+     PREMIO_PER_3_NUMBERI = 45 + 6
+    PERMUTATIONS = 4
+    x * PREMIO_PER_3_NUMBERI = x * PERMUTATIONS + LOSS
+    x * (PREMIO_PER_3_NUMBERI - PERMUTATIONS) = LOSS
+    x = LOSS / (PREMIO_PER_3_NUMBERI - PERMUTATIONS)
+   */
+
+  let x = Math.ceil(loss / (57 - 10));
+
+  if (x < 1) {
+    x = 1;
+  }
+
+  return x;
+};
+
 const clearConsole = () => {
   console.clear();
   console.log("\n".repeat(100));
-  console.log("--".repeat(100));
+  console.log("--".repeat(50));
+  console.log("\n".repeat(2));
 };
 
 module.exports = {
@@ -98,4 +130,6 @@ module.exports = {
   updateRitardi,
   getStake,
   clearConsole,
+  categories30,
+  getStake30,
 };

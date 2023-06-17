@@ -4,9 +4,14 @@
   "description": "",
   "main": "loto.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "genCombs": "node --max-old-space-size=24000 generateCombinations.js"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "axios": "^1.4.0",
+    "jsdom": "^22.1.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4"
+  }
 }
